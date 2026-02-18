@@ -1276,7 +1276,7 @@
                     <p style="margin-bottom: 10px;"><i class="fas fa-envelope" style="margin-right: 10px; color: var(--accent-color);"></i> <a href="mailto:lidanik20081988@mail.ru" style="color: rgba(255,255,255,0.7); transition: var(--transition); text-decoration: none;">lidanik20081988@mail.ru</a></p>
                     
                     <div class="social-links">
-                        <a href="https://t.me/muhaTime" target="_blank"><i class="fab fa-telegram"></i></a>
+                        <a href="https://t.me/vcbtitactoejump_bot" target="_blank"><i class="fab fa-telegram"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-vk"></i></a>
                     </div>
@@ -1437,7 +1437,7 @@
                     </select>
                     <input type="text" 
                            id="customer-city-other" 
-                           placeholder="Область/край, населённый пункт" 
+                           placeholder="Введите название вашего города" 
                            style="display: none; margin-top: 10px;"
                            disabled>
                     <div class="city-hint">
@@ -1503,195 +1503,111 @@
             img.src = './images/hero-bg.jpg';
         });
 
-        // Данные с изображениями из папки images
-        const products = [
+        // Данные с изображениями из папки images (товары теперь из localStorage)
+        const defaultProducts = [
             { 
                 id: 1, 
-                name: "Пантерный мухомоp (шляпки)", 
+                name: "Пантерный мухомор", 
                 latin: "Amanita pantherina", 
                 category: "pantherina", 
                 price: 2500, 
-                oldPrice: null,
-                weight: "50г шляпки", 
+                weight: "50г", 
                 badge: "Хит", 
-                stock: "В наличии", 
-                description: "Отборные шляпки пантерного мухомоpа. Урожай 2025",
+                description: "Шляпки отборные, урожай 2025",
+                image: "images/pantherina.jpg",
                 weightOptions: [
-                    { weight: "50г шляпки", price: 2500 },
-                    { weight: "100г шляпки", price: 4800 }
-                ],
-                image: "images/pantherina.jpg"
+                    { weight: "50г", price: 2500 },
+                    { weight: "100г", price: 4800 }
+                ]
             },
             { 
                 id: 2, 
-                name: "Пантерный мухомоp (лом)", 
-                latin: "Amanita pantherina", 
-                category: "pantherina", 
-                price: 4500, 
-                oldPrice: null,
-                weight: "100г лом", 
-                badge: "Премиум", 
-                stock: "В наличии", 
-                description: "Ломаные шляпки пантерного мухомоpа. Отличное качество, урожай 2025",
-                weightOptions: [
-                    { weight: "100г лом", price: 4500 }
-                ],
-                image: "images/pantherina-crumble.jpg"
-            },
-            { 
-                id: 3, 
-                name: "Пантерный мухомоp (молотый)", 
-                latin: "Amanita pantherina", 
-                category: "pantherina", 
-                price: 3800, 
-                oldPrice: null,
-                weight: "100г молотый", 
-                badge: "Акция 🔥", 
-                stock: "В наличии", 
-                description: "Молотый пантерный мухомоp. Удобная форма, урожай 2025",
-                weightOptions: [
-                    { weight: "100г молотый", price: 3800 }
-                ],
-                image: "images/pantherina-ground.jpg"
-            },
-            
-            // Красный мухомоp
-            { 
-                id: 4, 
-                name: "Красный мухомоp (шляпки)", 
+                name: "Красный мухомор", 
                 latin: "Amanita muscaria", 
                 category: "amanita", 
                 price: 1700, 
-                oldPrice: null,
-                weight: "100г шляпки", 
-                badge: "Хит", 
-                stock: "В наличии", 
-                description: "Отборные шляпки красного мухомоpа. Урожай 2025",
+                weight: "100г", 
+                badge: "Популярный", 
+                description: "Красный мухомор, сушёные шляпки",
+                image: "images/amanita-red.jpg",
                 weightOptions: [
-                    { weight: "100г шляпки", price: 1700 }
-                ],
-                image: "images/amanita-red.jpg"
+                    { weight: "100г", price: 1700 }
+                ]
             },
             { 
-                id: 5, 
-                name: "Красный мухомоp (лом)", 
-                latin: "Amanita muscaria", 
-                category: "amanita", 
-                price: 1500, 
-                oldPrice: null,
-                weight: "100г лом", 
-                badge: "Эконом", 
-                stock: "В наличии", 
-                description: "Ломаные шляпки красного мухомоpа. Урожай 2025",
-                weightOptions: [
-                    { weight: "100г лом", price: 1500 }
-                ],
-                image: "images/amanita-crumble.jpg"
-            },
-            { 
-                id: 6, 
-                name: "Красный мухомоp (молотый)", 
-                latin: "Amanita muscaria", 
-                category: "amanita", 
-                price: 1200, 
-                oldPrice: null,
-                weight: "100г молотый", 
-                badge: "Акция 🔥", 
-                stock: "В наличии", 
-                description: "Молотый красный мухомоp. Удобная форма, урожай 2025",
-                weightOptions: [
-                    { weight: "100г молотый", price: 1200 }
-                ],
-                image: "images/amanita-ground.jpg"
-            },
-            
-            // Лечебные грибы
-            { 
-                id: 7, 
-                name: "Кордицепс Алтайский", 
+                id: 3, 
+                name: "Кордицепс", 
                 latin: "Cordyceps sinensis", 
                 category: "medicinal", 
                 price: 600, 
-                oldPrice: null,
-                weight: "100г", 
+                weight: "50г", 
                 badge: "Новинка", 
-                stock: "В наличии", 
-                description: "Алтайский кордицепс. Урожай 2025",
+                description: "Алтайский кордицепс",
+                image: "images/cordyceps.jpg",
                 weightOptions: [
-                    { weight: "100г", price: 600 }
-                ],
-                image: "images/cordyceps.jpg"
+                    { weight: "50г", price: 600 }
+                ]
             },
             { 
-                id: 8, 
-                name: "Ежовик Алтайский", 
+                id: 4, 
+                name: "Ежовик гребенчатый", 
                 latin: "Hericium erinaceus", 
                 category: "medicinal", 
                 price: 600, 
-                oldPrice: null,
-                weight: "100г", 
-                badge: "Новинка", 
-                stock: "В наличии", 
-                description: "Алтайский ежовик. Урожай 2025",
+                weight: "50г", 
+                badge: "Редкий", 
+                description: "Полезный гриб",
+                image: "images/hericium.jpg",
                 weightOptions: [
-                    { weight: "100г", price: 600 }
-                ],
-                image: "images/hericium.jpg"
+                    { weight: "50г", price: 600 }
+                ]
             },
-            
-            // Съедобные грибы
             { 
-                id: 9, 
+                id: 5, 
                 name: "Белый гриб", 
                 latin: "Boletus edulis", 
                 category: "edible", 
                 price: 700, 
-                oldPrice: null,
                 weight: "100г", 
-                badge: "Хит", 
-                stock: "В наличии", 
-                description: "Сушёные белые грибы. Урожай 2025",
+                badge: "Съедобный", 
+                description: "Сушёные белые грибы",
+                image: "images/boletus.jpg",
                 weightOptions: [
                     { weight: "100г", price: 700 },
                     { weight: "500г", price: 3000 }
-                ],
-                image: "images/boletus.jpg"
+                ]
             },
             { 
-                id: 10, 
-                name: "Сморчок конический", 
-                latin: "Morchella conica", 
-                category: "edible", 
-                price: 900, 
-                oldPrice: null,
-                weight: "100г", 
-                badge: "Деликатес", 
-                stock: "В наличии", 
-                description: "Сушёные сморчки. Урожай 2025",
-                weightOptions: [
-                    { weight: "100г", price: 900 },
-                    { weight: "500г", price: 4000 }
-                ],
-                image: "images/morchella.jpg"
-            },
-            { 
-                id: 11, 
-                name: "Лисичка", 
+                id: 6, 
+                name: "Лисички", 
                 latin: "Cantharellus cibarius", 
                 category: "edible", 
                 price: 500, 
-                oldPrice: null,
                 weight: "100г", 
-                badge: "Хит", 
-                stock: "В наличии", 
-                description: "Сушёные лисички. Урожай 2025",
+                badge: "Ароматные", 
+                description: "Сушёные лисички",
+                image: "images/chanterelle.jpg",
                 weightOptions: [
                     { weight: "100г", price: 500 },
                     { weight: "500г", price: 2000 }
-                ],
-                image: "images/chanterelle.jpg"
+                ]
             }
         ];
+
+        // Загружаем товары из localStorage (из админ-панели)
+        function loadProducts() {
+            const saved = localStorage.getItem('mushroom_products');
+            if (saved) {
+                return JSON.parse(saved);
+            } else {
+                // Если нет сохраненных, сохраняем стандартные
+                localStorage.setItem('mushroom_products', JSON.stringify(defaultProducts));
+                return defaultProducts;
+            }
+        }
+
+        // Инициализация товаров
+        let products = loadProducts();
 
         const reviews = [
             { 
@@ -1772,34 +1688,86 @@
             renderFAQ();
             setupEventListeners();
             updateCart();
+
+            // Слушаем изменения в localStorage (если админка в другой вкладке)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'mushroom_products' || e.key === 'mushroom_products_updated') {
+                    const newProducts = loadProducts();
+                    
+                    // Проверяем, действительно ли изменились товары
+                    if (JSON.stringify(products) !== JSON.stringify(newProducts)) {
+                        products = newProducts;
+                        
+                        // Сохраняем текущий фильтр
+                        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+                        
+                        // Обновляем отображение
+                        renderProducts();
+                        
+                        // Восстанавливаем фильтр
+                        document.querySelectorAll('.product-card').forEach(card => {
+                            card.style.display = activeFilter === 'all' || card.dataset.category === activeFilter ? 'block' : 'none';
+                        });
+                        
+                        // Показываем уведомление
+                        showNotification('🔄 Каталог обновлен!', 'success');
+                    }
+                }
+            });
+
+            // Также проверяем каждые 3 секунды (на случай если storage событие не сработало)
+            let lastProductsString = JSON.stringify(products);
+            setInterval(() => {
+                const current = localStorage.getItem('mushroom_products');
+                if (current && current !== lastProductsString) {
+                    lastProductsString = current;
+                    products = JSON.parse(current);
+                    
+                    // Сохраняем текущий фильтр
+                    const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+                    
+                    // Обновляем отображение
+                    renderProducts();
+                    
+                    // Восстанавливаем фильтр
+                    document.querySelectorAll('.product-card').forEach(card => {
+                        card.style.display = activeFilter === 'all' || card.dataset.category === activeFilter ? 'block' : 'none';
+                    });
+                }
+            }, 3000);
         });
 
         function renderProducts() {
             const grid = document.getElementById('catalog-grid');
             if (!grid) return;
             
+            if (products.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-light);">Товаров пока нет</p>';
+                return;
+            }
+
             grid.innerHTML = products.map(p => {
-                const weightOptions = p.weightOptions.map((opt, index) => 
+                const weightOptions = (p.weightOptions || []).map((opt, index) => 
                     `<div class="weight-option ${index === 0 ? 'active' : ''}" data-price="${opt.price}" data-weight="${opt.weight}">${opt.weight}</div>`
                 ).join('');
                 
                 return `
                     <div class="product-card" data-category="${p.category}" data-id="${p.id}">
                         <div class="product-image">
-                            <img src="${p.image}" alt="${p.name}" onerror="this.src='images/placeholder.jpg'">
+                            <img src="${p.image || 'images/placeholder.jpg'}" alt="${p.name}" onerror="this.src='images/placeholder.jpg'">
                         </div>
                         <div class="product-content">
-                            <span class="product-badge">${p.badge}</span>
+                            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
                             <h3 class="product-title">${p.name}</h3>
-                            <p class="product-latin">${p.latin}</p>
-                            <p style="color: var(--text-light); font-size: 0.9rem; margin: 10px 0;">${p.description}</p>
+                            ${p.latin ? `<p class="product-latin">${p.latin}</p>` : ''}
+                            <p style="color: var(--text-light); font-size: 0.9rem; margin: 10px 0;">${p.description || ''}</p>
                             
                             <div class="weight-options">
                                 ${weightOptions}
                             </div>
                             
                             <div class="product-footer">
-                                <span class="product-price"><span class="current-price">${p.price}</span> ₽</span>
+                                <span class="product-price"><span class="current-price">${p.weightOptions?.[0]?.price || p.price}</span> ₽</span>
                                 <button class="btn btn-primary btn-small add-to-cart">Добавить</button>
                             </div>
                         </div>
@@ -2085,7 +2053,7 @@ ${orderDetails}
             // Chatbot
             document.getElementById('chatbot-btn').addEventListener('click', function() {
                 const message = "Здравствуйте! Я помогу с заказом грибов в любой город России.\n\n" +
-                              "📱 Напишите нам в Telegram: https://t.me/muhaTime\n" +
+                              "📱 Напишите нам в Telegram: @vcbtitactoejump_bot\n" +
                               "📞 Или позвоните: +7 (903) 911-46-65\n\n" +
                               "🍄 Урожай 2025 уже в наличии!";
                 
