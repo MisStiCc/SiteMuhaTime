@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель | Грибы онлайн MuhaTime</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Логин форма */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .login-container input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-error {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Админ панель */
+        .admin-panel {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .admin-header h1 {
+            color: #333;
+            font-size: 2rem;
+        }
+
+        .admin-header h1 i {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .admin-header button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-header button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .filter-select {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .products-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            padding: 20px 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .product-image-small {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .product-image-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .weight-options-badge {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .weight-badge {
+            background: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .weight-option-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .weight-option-group input {
+            flex: 1;
+        }
+
+        .remove-weight {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .add-weight {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-buttons .save-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .modal-buttons button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Логин форма -->
+    <div class="login-container" id="login-container">
+        <h1><i class="fas fa-mushroom"></i> Админ-панель</h1>
+        <input type="password" id="admin-password" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') checkPassword()">
+        <button onclick="checkPassword()">Войти</button>
+        <div class="login-error" id="login-error"></div>
+    </div>
+
+    <!-- Админ панель -->
+    <div class="admin-panel" id="admin-panel">
+        <div class="admin-header">
+            <h1><i class="fas fa-cog"></i> Управление товарами</h1>
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-mushroom"></i>
+                <h3 id="total-products">0</h3>
+                <p>Всего товаров</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tags"></i>
+                <h3 id="total-categories">0</h3>
+                <p>Категорий</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-weight-hanging"></i>
+                <h3 id="total-weight-options">0</h3>
+                <p>Вариантов веса</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <h3 id="avg-price">0</h3>
+                <p>Средняя цена</p>
+            </div>
+        </div>
+
+        <!-- Панель действий -->
+        <div class="actions-bar">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="🔍 Поиск по названию или описанию..." oninput="filterProducts()">
+                <select class="filter-select" id="category-filter" onchange="filterProducts()">
+                    <option value="all">Все категории</option>
+                    <option value="pantherina">Пантерные</option>
+                    <option value="amanita">Красные</option>
+                    <option value="medicinal">Лечебные</option>
+                    <option value="edible">Съедобные</option>
+                </select>
+            </div>
+            <button class="add-product-btn" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> Добавить товар
+            </button>
+        </div>
+
+        <!-- Таблица товаров -->
+        <div class="products-table" id="products-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Фото</th>
+                        <th>Название</th>
+                        <th>Категория</th>
+                        <th>Варианты веса</th>
+                        <th>Бейдж</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="products-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Редактирование товара</h2>
+            <form id="edit-form" onsubmit="saveProduct(event)">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-group">
+                    <label>Название товара *</label>
+                    <input type="text" id="product-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Латинское название</label>
+                    <input type="text" id="product-latin">
+                </div>
+
+                <div class="form-group">
+                    <label>Категория *</label>
+                    <select id="product-category" required>
+                        <option value="pantherina">Пантерные</option>
+                        <option value="amanita">Красные</option>
+                        <option value="medicinal">Лечебные</option>
+                        <option value="edible">Съедобные</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Бейдж (метка)</label>
+                    <input type="text" id="product-badge" placeholder="Например: Хит, Новинка, Акция">
+                </div>
+
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Название файла с фото</label>
+                    <input type="text" id="product-image" placeholder="images/nazvanie.jpg">
+                    <small style="color: #999; display: block; margin-top: 5px;">Файл должен лежать в папке images/</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Варианты веса и цены *</label>
+                    <div id="weight-options-container"></div>
+                    <button type="button" class="add-weight" onclick="addWeightOption()">
+                        <i class="fas fa-plus"></i> Добавить вариант веса
+                    </button>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Сохранить</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ПРОСТОЙ ПАРОЛЬ (для демонстрации)
+        const ADMIN_PASSWORD = 'admin123'; // Поменяйте на свой!
+
+        // Товары (загружаем из localStorage или используем начальные)
+        let products = [];
+
+        // Загружаем товары из localStorage или используем начальные
+        function loadProducts() {
+            const saved = localStorage.getItem('mushroom_products');
+            if (saved) {
+                products = JSON.parse(saved);
+            } else {
+                // Начальные товары из index.html
+                products = [
+                    { 
+                        id: 1, 
+                        name: "Пантерный мухомор", 
+                        latin: "Amanita pantherina", 
+                        category: "pantherina", 
+                        price: 2500, 
+                        weight: "50г", 
+                        badge: "Хит", 
+                        description: "Шляпки отборные, урожай 2025",
+                        image: "images/pantherina.jpg",
+                        weightOptions: [
+                            { weight: "50г", price: 2500 },
+                            { weight: "100г", price: 4800 }
+                        ]
+                    },
+                    { 
+                        id: 2, 
+                        name: "Красный мухомор", 
+                        latin: "Amanita muscaria", 
+                        category: "amanita", 
+                        price: 1700, 
+                        weight: "100г", 
+                        badge: "Популярный", 
+                        description: "Красный мухомор, сушёные шляпки",
+                        image: "images/amanita-red.jpg",
+                        weightOptions: [
+                            { weight: "100г", price: 1700 }
+                        ]
+                    },
+                    { 
+                        id: 3, 
+                        name: "Кордицепс", 
+                        latin: "Cordyceps sinensis", 
+                        category: "medicinal", 
+                        price: 600, 
+                        weight: "50г", 
+                        badge: "Новинка", 
+                        description: "Алтайский кордицепс",
+                        image: "images/cordyceps.jpg",
+                        weightOptions: [
+                            { weight: "50г", price: 600 }
+                        ]
+                    },
+                    { 
+                        id: 4, 
+                        name: "Ежовик гребенчатый", 
+                        latin: "Hericium erinaceus", 
+                        category: "medicinal", 
+                        price: 600, 
+                        weight: "50г", 
+                        badge: "Редкий", 
+                        description: "Полезный гриб",
+                        image: "images/hericium.jpg",
+                        weightOptions: [
+                            { weight: "50г", price: 600 }
+                        ]
+                    },
+                    { 
+                        id: 5, 
+                        name: "Белый гриб", 
+                        latin: "Boletus edulis", 
+                        category: "edible", 
+                        price: 700, 
+                        weight: "100г", 
+                        badge: "Съедобный", 
+                        description: "Сушёные белые грибы",
+                        image: "images/boletus.jpg",
+                        weightOptions: [
+                            { weight: "100г", price: 700 },
+                            { weight: "500г", price: 3000 }
+                        ]
+                    },
+                    { 
+                        id: 6, 
+                        name: "Лисички", 
+                        latin: "Cantharellus cibarius", 
+                        category: "edible", 
+                        price: 500, 
+                        weight: "100г", 
+                        badge: "Ароматные", 
+                        description: "Сушёные лисички",
+                        image: "images/chanterelle.jpg",
+                        weightOptions: [
+                            { weight: "100г", price: 500 },
+                            { weight: "500г", price: 2000 }
+                        ]
+                    }
+                ];
+                saveProducts();
+            }
+        }
+
+        // Сохраняем товары в localStorage
+        function saveProducts() {
+            localStorage.setItem('mushroom_products', JSON.stringify(products));
+            updateStats();
+            renderProducts();
+            
+            // Оповещаем другие вкладки об изменениях (если нужно)
+            localStorage.setItem('mushroom_products_updated', Date.now().toString());
+        }
+
+        // Проверка пароля
+        function checkPassword() {
+            const password = document.getElementById('admin-password').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                loadProducts();
+                renderProducts();
+                updateStats();
+            } else {
+                document.getElementById('login-error').textContent = 'Неверный пароль!';
+            }
+        }
+
+        // Выход
+        function logout() {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('admin-password').value = '';
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            document.getElementById('total-products').textContent = products.length;
+            
+            const categories = new Set(products.map(p => p.category));
+            document.getElementById('total-categories').textContent = categories.size;
+            
+            const weightOptions = products.reduce((sum, p) => sum + (p.weightOptions?.length || 0), 0);
+            document.getElementById('total-weight-options').textContent = weightOptions;
+            
+            const avgPrice = products.reduce((sum, p) => {
+                const minPrice = Math.min(...(p.weightOptions?.map(w => w.price) || [p.price || 0]));
+                return sum + minPrice;
+            }, 0) / products.length;
+            
+            document.getElementById('avg-price').textContent = Math.round(avgPrice) + ' ₽';
+        }
+
+        // Фильтрация товаров
+        function filterProducts() {
+            renderProducts();
+        }
+
+        // Рендер таблицы товаров
+        function renderProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+            
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
+                                    (p.description || '').toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+
+            const tbody = document.getElementById('products-list');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-search"></i>
+                                <h3>Ничего не найдено</h3>
+                                <p>Попробуйте изменить параметры поиска</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => `
+                <tr>
+                    <td>
+                        <div class="product-image-small">
+                            <img src="${p.image || 'images/placeholder.jpg'}" alt="${p.name}" onerror="this.src='images/placeholder.jpg'">
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${p.name}</strong><br>
+                        <small style="color: #999; font-style: italic;">${p.latin || ''}</small>
+                    </td>
+                    <td>${getCategoryName(p.category)}</td>
+                    <td>
+                        <div class="weight-options-badge">
+                            ${(p.weightOptions || []).map(w => 
+                                `<span class="weight-badge">${w.weight} - ${w.price}₽</span>`
+                            ).join('')}
+                        </div>
+                    </td>
+                    <td>
+                        ${p.badge ? `<span class="weight-badge" style="background: #c49a6c; color: white;">${p.badge}</span>` : '-'}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="openEditModal(${p.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn copy-btn" onclick="copyProduct(${p.id})" title="Копировать">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct(${p.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Получение названия категории
+        function getCategoryName(cat) {
+            const names = {
+                'pantherina': 'Пантерные',
+                'amanita': 'Красные',
+                'medicinal': 'Лечебные',
+                'edible': 'Съедобные'
+            };
+            return names[cat] || cat;
+        }
+
+        // Открыть модалку для добавления
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Добавление товара';
+            document.getElementById('product-id').value = '';
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-latin').value = '';
+            document.getElementById('product-category').value = 'pantherina';
+            document.getElementById('product-badge').value = '';
+            document.getElementById('product-description').value = '';
+            document.getElementById('product-image').value = '';
+            
+            // Создаем стандартные опции веса
+            document.getElementById('weight-options-container').innerHTML = `
+                <div class="weight-option-group">
+                    <input type="text" placeholder="Вес (например: 50г)" value="50г" id="weight-0">
+                    <input type="number" placeholder="Цена" value="1000" id="price-0">
+                    <button type="button" class="remove-weight" onclick="removeWeightOption(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        // Открыть модалку для редактирования
+        function openEditModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('modal-title').textContent = 'Редактирование товара';
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-name').value = product.name || '';
+            document.getElementById('product-latin').value = product.latin || '';
+            document.getElementById('product-category').value = product.category || 'pantherina';
+            document.getElementById('product-badge').value = product.badge || '';
+            document.getElementById('product-description').value = product.description || '';
+            document.getElementById('product-image').value = product.image || '';
+
+            // Заполняем опции веса
+            const container = document.getElementById('weight-options-container');
+            container.innerHTML = '';
+            
+            (product.weightOptions || []).forEach((opt, index) => {
+                container.innerHTML += `
+                    <div class="weight-option-group">
+                        <input type="text" placeholder="Вес (например: 50г)" value="${opt.weight}" id="weight-${index}">
+                        <input type="number" placeholder="Цена" value="${opt.price}" id="price-${index}">
+                        <button type="button" class="remove-weight" onclick="removeWeightOption(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            // Если нет опций, добавляем одну пустую
+            if (product.weightOptions?.length === 0) {
+                addWeightOption();
+            }
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        // Добавить опцию веса
+        function addWeightOption() {
+            const container = document.getElementById('weight-options-container');
+            const index = container.children.length;
+            container.innerHTML += `
+                <div class="weight-option-group">
+                    <input type="text" placeholder="Вес (например: 50г)" value="50г" id="weight-${index}">
+                    <input type="number" placeholder="Цена" value="1000" id="price-${index}">
+                    <button type="button" class="remove-weight" onclick="removeWeightOption(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Удалить опцию веса
+        function removeWeightOption(btn) {
+            const group = btn.closest('.weight-option-group');
+            if (document.querySelectorAll('.weight-option-group').length > 1) {
+                group.remove();
+            } else {
+                showNotification('Должен быть хотя бы один вариант веса', 'error');
+            }
+        }
+
+        // Сохранить товар
+        function saveProduct(e) {
+            e.preventDefault();
+
+            // Собираем опции веса
+            const weightOptions = [];
+            const groups = document.querySelectorAll('.weight-option-group');
+            
+            for (let group of groups) {
+                const weight = group.querySelector('input[placeholder*="Вес"]')?.value;
+                const price = group.querySelector('input[type="number"]')?.value;
+                
+                if (weight && price) {
+                    weightOptions.push({
+                        weight: weight,
+                        price: parseInt(price)
+                    });
+                }
+            }
+
+            if (weightOptions.length === 0) {
+                showNotification('Добавьте хотя бы один вариант веса', 'error');
+                return;
+            }
+
+            const productData = {
+                name: document.getElementById('product-name').value,
+                latin: document.getElementById('product-latin').value,
+                category: document.getElementById('product-category').value,
+                badge: document.getElementById('product-badge').value,
+                description: document.getElementById('product-description').value,
+                image: document.getElementById('product-image').value || 'images/placeholder.jpg',
+                weightOptions: weightOptions,
+                // Для обратной совместимости
+                price: weightOptions[0].price,
+                weight: weightOptions[0].weight
+            };
+
+            const id = document.getElementById('product-id').value;
+            
+            if (id) {
+                // Редактирование
+                const index = products.findIndex(p => p.id == id);
+                if (index !== -1) {
+                    products[index] = { ...products[index], ...productData };
+                    showNotification('Товар обновлен');
+                }
+            } else {
+                // Добавление
+                const newId = Math.max(...products.map(p => p.id), 0) + 1;
+                products.push({ id: newId, ...productData });
+                showNotification('Товар добавлен');
+            }
+
+            saveProducts();
+            closeModal();
+        }
+
+        // Копировать товар
+        function copyProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const newId = Math.max(...products.map(p => p.id), 0) + 1;
+            const newProduct = { 
+                ...product, 
+                id: newId,
+                name: product.name + ' (копия)'
+            };
+            
+            products.push(newProduct);
+            saveProducts();
+            showNotification('Товар скопирован');
+        }
+
+        // Удалить товар
+        function deleteProduct(id) {
+            if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                showNotification('Товар удален');
+            }
+        }
+
+        // Закрыть модалку
+        function closeModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        // Показать уведомление
+        function showNotification(text, type = 'success') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = text;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.remove();
+            }, 3000);
+        }
+
+        // Обработчик для кнопки Esc
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Закрытие по клику вне модалки
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Слушаем изменения в других вкладках
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'mushroom_products_updated') {
+                loadProducts();
+                renderProducts();
+                updateStats();
+            }
+        });
+    </script>
+</body>
+</html>
